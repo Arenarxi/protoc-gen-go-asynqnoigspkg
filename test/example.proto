@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package example;
 
-import "github.com/jmploop/protoc-gen-go-asynq@v1.0.4/proto/asynq.proto";
+import "./asynq.proto";
 // import "google/protobuf/empty.proto";
 
 option go_package = ".;example";
