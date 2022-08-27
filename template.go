@@ -24,21 +24,18 @@ func Register{{.ServiceType}}JobServer(mux *asynq.ServeMux, srv {{.ServiceType}}
 {{range .Methods}}
 func _{{$svrType}}_{{.Name}}_Job_Handler(srv {{$svrType}}JobServer) func(context.Context, *asynq.Task) error {
 	return func(ctx context.Context, task *asynq.Task) error {
-		var in {{.Request}}
-		ctx, beforeCtx := trace.Before(ctx, "asynq", task.Type())
-		scp := rkgrpcmid.GetServerContextPayload(ctx)		
+		var in {{.Request}}		
 		if err := json.Unmarshal(task.Payload(), &in); err != nil {
-			trace.After(ctx, beforeCtx, err)
+			
 			return log.Errorln(task.Type(),log.Any("request",in),log.NewWhy(err))
 		}
-		scp["req"] = in		
 		err := srv.{{.Name}}(ctx, &in)
 		if err != nil{
 			err=log.Errorln(task.Type(),log.Any("request",in),log.NewWhy(err))
 		}else{
 			log.Println(task.Type(),log.Any("request",in))
 		}		
-		trace.After(ctx, beforeCtx, err)
+		
 		return err
 	}
 }
